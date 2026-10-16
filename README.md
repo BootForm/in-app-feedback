@@ -47,7 +47,7 @@ The `Accept: application/json` header makes BootForm answer with JSON instead of
 | `email` | `sam@example.com` | Optional. Shown in your dashboard. |
 | `_replyto` | `sam@example.com` | Same address. BootForm sets it as Reply-To on the notification email, so you can just hit Reply. Not stored as a field. |
 | `_subject` | `Feedback: My App 2.4.1` | Subject line of the notification email. Not stored as a field. |
-| `report_id` | `b1f0...` | Made on the device. If a retry ever sends a report twice, both copies share this ID. |
+| `report_id` | `b1f0...` | Made on the device, and also sent as the `Idempotency-Key` header, so a retry never creates a second report. See [Sent once, even when retried](#sent-once-even-when-retried). |
 | `platform` | `android` / `ios` | |
 | `app_version` | `2.4.1` | `versionName` on Android, `version` in Flutter. |
 | `app_build` | `241` | `versionCode` on Android, `buildNumber` in Flutter. |
@@ -65,6 +65,7 @@ flag): just add a key to the map.
 | BootForm answers | Code | The sample code |
 |---|---|---|
 | `200` | | **Sent.** Deletes the report and its screenshot from the device. |
+| `200` with `"duplicate": true` | | **Sent.** BootForm already had this report from an earlier try whose answer never arrived, and kept just the one. |
 | `200` with `"status": "pending_claim"` | | **Sent**, to a form nobody has claimed yet. The answer includes your `claim_url`, which the sample logs (Logcat on Android, the debug console in Flutter). |
 | `403` | `PLAN_LIMIT` | **Resends without the screenshot.** Your plan doesn't accept files. |
 | `422` | `FILE_TOO_LARGE` | **Resends without the screenshot.** |
@@ -113,6 +114,17 @@ send it.
 
 Both were tested by sending a report in airplane mode, killing the app, and turning the network
 back on.
+
+### Sent once, even when retried
+
+A queue that retries can send the same report twice: BootForm stores it, but the answer is lost
+(the connection drops, the app is killed) and the next try sends it again. To stop that, each
+request carries the report's `report_id` as an `Idempotency-Key` header. BootForm keeps the first
+report with that key and answers any repeat within 7 days with `200` and `"duplicate": true`,
+without storing it again, emailing you again or counting it against your quota. A report that was
+refused (say, its screenshot was too big) doesn't use up its key, so the resend without the
+screenshot goes through. More in BootForm's docs:
+[Retrying safely](https://bootform.com/docs/building-your-form#retrying-safely).
 
 ---
 

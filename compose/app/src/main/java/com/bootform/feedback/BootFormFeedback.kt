@@ -125,6 +125,8 @@ object BootFormFeedback {
             connection.readTimeout = 30_000
             connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=$boundary")
             connection.setRequestProperty("Accept", "application/json")
+            // BootForm stores a report once per key, so a retry after a lost answer is not a second report.
+            fields["report_id"]?.let { connection.setRequestProperty("Idempotency-Key", it) }
 
             connection.outputStream.buffered().use { out ->
                 fun write(text: String) = out.write(text.toByteArray(Charsets.UTF_8))

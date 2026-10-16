@@ -154,6 +154,9 @@ class BootFormFeedback {
     final request = http.MultipartRequest('POST', Uri.parse('$_endpoint$formId'))
       ..headers['Accept'] = 'application/json'
       ..fields.addAll(fields);
+    // BootForm stores a report once per key, so a retry after a lost answer is not a second report.
+    final reportId = fields['report_id'];
+    if (reportId != null) request.headers['Idempotency-Key'] = reportId;
     if (screenshot != null) {
       request.files.add(await http.MultipartFile.fromPath('screenshot', screenshot.path, filename: 'screenshot.png'));
     }
