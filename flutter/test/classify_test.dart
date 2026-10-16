@@ -19,4 +19,12 @@ void main() {
   test('deleted form is given up', () => expect(classify(410, 'FORM_DELETED'), Outcome.rejected));
   test('disabled form is given up', () => expect(classify(403, 'FORM_DISABLED'), Outcome.rejected));
   test('invalid form id is given up', () => expect(classify(422, 'INVALID_FORM_ID'), Outcome.rejected));
+  test('oversized request drops only the screenshot',
+      () => expect(classify(413, 'REQUEST_TOO_LARGE', true), Outcome.dropScreenshot));
+  test('monthly quota is retried later', () => expect(classify(429, 'QUOTA_EXCEEDED'), Outcome.retryLater));
+  test('unclaimed form claim limit is retried later',
+      () => expect(classify(429, 'CLAIM_LIMIT_EXCEEDED'), Outcome.retryLater));
+  test('request timeout is retried', () => expect(classify(408), Outcome.retryLater));
+  test('validation error is given up', () => expect(classify(422, 'VALIDATION_ERROR'), Outcome.rejected));
+  test('any other 2xx is sent', () => expect(classify(201), Outcome.sent));
 }
