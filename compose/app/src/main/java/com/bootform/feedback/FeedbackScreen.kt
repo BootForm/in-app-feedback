@@ -64,6 +64,7 @@ fun FeedbackScreen(screenshot: Bitmap?, onClose: () -> Unit) {
             value = message,
             onValueChange = { message = it.take(5000) },
             label = { Text("What happened, or what should we change?") },
+            supportingText = { Text("${message.length} / 5000") },
             modifier = Modifier.fillMaxWidth().height(160.dp),
         )
         OutlinedTextField(
