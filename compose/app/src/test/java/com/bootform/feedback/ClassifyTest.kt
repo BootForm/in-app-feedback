@@ -32,4 +32,18 @@ class ClassifyTest {
     @Test fun disabled_form_is_given_up() = assertEquals(Outcome.Rejected, classify(403, "FORM_DISABLED"))
 
     @Test fun invalid_form_id_is_given_up() = assertEquals(Outcome.Rejected, classify(422, "INVALID_FORM_ID"))
+
+    @Test fun oversized_request_drops_only_the_screenshot() =
+        assertEquals(Outcome.DropScreenshot, classify(413, "REQUEST_TOO_LARGE", hadScreenshot = true))
+
+    @Test fun monthly_quota_is_retried_later() = assertEquals(Outcome.RetryLater, classify(429, "QUOTA_EXCEEDED"))
+
+    @Test fun unclaimed_form_claim_limit_is_retried_later() =
+        assertEquals(Outcome.RetryLater, classify(429, "CLAIM_LIMIT_EXCEEDED"))
+
+    @Test fun request_timeout_is_retried() = assertEquals(Outcome.RetryLater, classify(408))
+
+    @Test fun validation_error_is_given_up() = assertEquals(Outcome.Rejected, classify(422, "VALIDATION_ERROR"))
+
+    @Test fun any_other_2xx_is_sent() = assertEquals(Outcome.Sent, classify(201))
 }
