@@ -137,7 +137,7 @@ actually looking at, and the user can see it and untick it before sending.
 |---|---|---|
 | Text reports with device info | Yes | Yes |
 | Offline queue | Yes | Yes |
-| Screenshot attached | No: the report is sent without it | Yes, up to the plan's file size (5 MB on Starter) |
+| Screenshot attached | No: the report is sent without it | Yes, up to the plan's file size (10 MB per file on Starter) |
 
 Screenshots are shrunk on the device first, so a plan's limit is never close: Android sends a JPEG
 with the longest side at 1,280 pixels (usually 100 to 400 KB), and Flutter sends a PNG at the same
