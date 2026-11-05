@@ -11,6 +11,7 @@ email, Slack or Discord) with the details you need to act on it:
   doesn't take files, the report is still sent, just without the image.
 
 <img src="docs/feedback-compose.png" width="300" alt="Android feedback screen with a message field, character count, optional email, and screenshot checkbox.">
+<img src="docs/feedback-flutter.png" width="300" alt="Flutter feedback screen with a sample message, character count, optional email, and screenshot checkbox.">
 
 No SDK and no package to install from us. Each platform is **one file you copy into your app**,
 plus a small demo app showing it in use.
