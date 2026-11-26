@@ -232,6 +232,14 @@ by side.
 
 ---
 
+## Like it?
+
+If this saved you some time, a star on this repo helps other people find it. Everything else
+BootForm publishes is at [github.com/BootForm](https://github.com/BootForm): more templates, form
+styles and page sections, all free to copy.
+
+---
+
 ## License
 
 MIT. Copy the files into closed-source apps freely.
